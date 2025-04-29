@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import userRoutes from "./routes/user.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 import express from "express";
 const app = express();
@@ -22,5 +23,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRoutes);
+app.use("/projects", projectRoutes);
 
 export default app;
