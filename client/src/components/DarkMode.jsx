@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-// import LightButton from "../../assets/website/light-mode-button.png";
-// import DarkButton from "../../assets/website/dark-mode-button.png";
 import { Sun, Moon } from "lucide-react";
 
 const DarkMode = () => {
@@ -24,12 +22,11 @@ const DarkMode = () => {
     <div className="relative">
       <button
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        className="cursor-pointer p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
         aria-label="Toggle theme"
       >
         {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
       </button>
-      {/* <DarkMode/> */}
     </div>
   );
 };

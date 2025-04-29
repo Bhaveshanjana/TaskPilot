@@ -33,8 +33,8 @@ const createproject = async (req, res) => {
     });
    return res.status(201).json({ newProject });
   } catch (error) {
-   return res.status(500).json({ message: "error while creating tasks" });
     console.log(error);
+   return res.status(500).json({ message: "error while creating tasks" });
   }
 };
 
@@ -56,12 +56,15 @@ const updateproject = async (req, res) => {
       },
       { new: true } // return updated doc
     );
-
+    if (!project) {
+      return res.status(404).json({ message: "Task not found in any project" });
+    }
    return res.status(200).json({ message: "Project updated successfullly" });
   } catch (error) {
    return res
       .status(500)
-      .json({ message: "Internal server error while updating project" });
+      .json({ message: "Internal server error while updating project", error });
+      
   }
 };
 
