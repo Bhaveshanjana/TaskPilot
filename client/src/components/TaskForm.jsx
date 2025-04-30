@@ -1,5 +1,3 @@
-// ----------------------------
-// File: components/TaskForm.jsx
 import React from "react";
 
 const STATUS_OPTIONS = ["Pending", "In Progress", "Completed"];
@@ -92,7 +90,7 @@ export default function TaskForm({
           name="status"
           value={formData.status}
           onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer"
         >
           {STATUS_OPTIONS.map((option) => (
             <option key={option} value={option}>
@@ -101,18 +99,33 @@ export default function TaskForm({
           ))}
         </select>
       </div>
+      {isEditing && (
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Date of Completion
+          </label>
+          <input
+            type="date"
+            value={formData.dateOfcompletion}
+            onChange={(e) =>
+              setFormData({ ...formData, dateOfcompletion: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white cursor-pointer"
+          />
+        </div>
+      )}
 
       <div className="flex justify-end gap-2">
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="cursor-pointer px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
         >
           {isEditing ? "Update Task" : "Create Task"}
         </button>

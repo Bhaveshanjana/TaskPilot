@@ -5,23 +5,34 @@ import TaskForm from "./TaskForm";
 import ProjectList from "./ProjectList";
 import { Plus } from "lucide-react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function TaskManager() {
   const [projects, setProjects] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     projectTitle: "",
     title: "",
     description: "",
     status: "Pending",
+    datOfcompletion: "",
   });
 
+  // Get all project's
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/projects/getallproject`
+          `${import.meta.env.VITE_BASE_URL}/projects/getallproject`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
         setProjects(res.data.project);
       } catch (error) {
@@ -39,7 +50,12 @@ export default function TaskManager() {
           `${
             import.meta.env.VITE_BASE_URL
           }/projects/updateproject/${editingTask}`,
-          formData
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
         toast.success(res.data.message);
       } else {
@@ -55,9 +71,14 @@ export default function TaskManager() {
         };
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/projects/createproject`,
-          dataToSend
+          dataToSend,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
-        toast.success(res.data.message);
+        toast.success("Project created successfully");
       }
 
       setIsFormOpen(false);
@@ -67,9 +88,10 @@ export default function TaskManager() {
         description: "",
         status: "Pending",
         projectTitle: "",
+        dateOfcompletion: "",
       });
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
     }
   };
 
@@ -92,6 +114,7 @@ export default function TaskManager() {
       description: task.description,
       status: task.status,
       projectTitle: "", // Uneditable during edit
+      dateOfcompletion: task.dateOfcompletion || "",
     });
   };
 
@@ -106,14 +129,35 @@ export default function TaskManager() {
     });
   };
 
+  const handleLogOut = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/users/logout`
+      );
+      localStorage.removeItem("token");
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       <header className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="container mx-auto px-4 p-3 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            TaskPilot
-          </h1>
-          <DarkMode />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              TaskPilot
+            </h1>
+          </div>
+          <div className="flex gap-4">
+            <DarkMode />
+            <button
+              onClick={handleLogOut}
+              className="text-sm bg-blue-400/50 rounded-md p-1 px-2 lg:text-sm lg:px-2 cursor-pointer"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 

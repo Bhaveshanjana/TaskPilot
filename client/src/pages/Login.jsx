@@ -44,25 +44,22 @@ const login = () => {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col bg-gray-900 dark:bg-white px-4">
+      <div className="min-h-screen flex flex-col bg-gray-900 dark:bg-white ">
         {/* Navbar */}
-        <div className="mt-2 flex flex-wrap justify-end gap-4 ml-6 md:justify-between items-center py-4">
-          <div className="flex gap-3 mt-2 sm:mt-0">
+        <div className=" flex flex-wrap gap-4 justify-end items-center py-2 dark:bg-gray-200 bg-gray-800 shadow-sm">
+          <div className="flex  gap-3 mt-2 sm:mt-0 mr-6 ">
             <Link
               to={"/signup"}
-              className="bg-white dark:bg-white border px-4 py-1 rounded-md hover:bg-yellow-400/60 dark:hover:text-white hover:text-black transition"
+              className="bg-white dark:bg-white border px-4 py-1 rounded-md hover:bg-yellow-400/60 dark:hover:text-white hover:text-black transition-all duration-200"
             >
               Signup
-            </Link>
-            <Link to={"/"}>
-              <GoHome className="text-white dark:text-black text-2xl hover:text-orange-400 dark:hover:text-orange-500 mt-1" />
             </Link>
             <DarkMode />
           </div>
         </div>
 
         {/* Login Form */}
-        <div className="flex-grow flex items-center justify-center">
+        <div className="flex-grow flex items-center justify-center mx-4">
           <div className="w-full max-w-md bg-gray-800 dark:bg-gray-100 p-6 rounded-xl shadow-lg">
             <h1 className="text-xl text-center text-white dark:text-black font-bold mb-2">
               Welcome to{" "}
@@ -95,8 +92,9 @@ const login = () => {
                 />
               </div>
               <button
+                disabled={!email || !password}
                 type="submit"
-                className="w-full bg-red-400 hover:bg-red-500 text-white dark:text-white font-medium py-2 rounded-md transition"
+                className="w-full bg-red-400 hover:bg-red-500 text-white dark:text-white font-medium py-2 rounded-md transition-all duration-200 cursor-pointer"
               >
                 Login
               </button>

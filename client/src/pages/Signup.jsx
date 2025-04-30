@@ -44,25 +44,22 @@ const signup = () => {
   };
   return (
     <>
-      <div className="min-h-screen flex flex-col bg-gray-900 dark:bg-white px-4">
+      <div className="min-h-screen flex flex-col bg-gray-900 dark:bg-white">
         {/* Navbar */}
-        <div className="flex flex-wrap justify-center ml-4 gap-6 md:justify-between items-center py-4">
-          <div className="flex gap-3 mt-2 sm:mt-0">
+        <div className="flex flex-wrap  gap-6 justify-end items-center py-2 dark:bg-gray-200 bg-gray-800 shadow-sm ">
+          <div className="flex gap-3 mt-2 sm:mt-0 mr-6">
             <Link
               to={"/login"}
               className="bg-white border px-4 py-1 rounded-md hover:bg-yellow-400/60  dark:hover:text-white hover:text-black transition"
             >
               Login
             </Link>
-            <Link to={"/"}>
-              <GoHome className="text-white dark:text-black text-2xl hover:text-orange-400 dark:hover:text-orange-500 mt-1" />
-            </Link>
             <DarkMode />
           </div>
         </div>
 
         {/* Signup Form */}
-        <div className="flex-grow flex items-center justify-center">
+        <div className="flex-grow flex items-center justify-center px-3">
           <div className="w-full max-w-md bg-gray-800 dark:bg-gray-100 p-6 rounded-xl shadow-lg">
             <h1 className="text-xl text-center text-white dark:text-black font-bold mb-2">
               Welcome to{" "}
@@ -117,7 +114,7 @@ const signup = () => {
               <button
                 type="submit"
                 disabled={!email || !password}
-                className="w-full bg-red-400 hover:bg-red-500 text-white font-medium py-2 rounded-md transition disabled:opacity-50"
+                className="w-full bg-red-400 hover:bg-red-500 text-white font-medium py-2 rounded-md transition cursor-pointer "
               >
                 Signup
               </button>
