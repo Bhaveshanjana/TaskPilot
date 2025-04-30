@@ -29,6 +29,10 @@ const projectSchema = new mongoose.Schema({
     required: true,
   },
   tasks: [taskSchema],
+  creatorId: {
+    ref: "user",
+    type: String,
+  },
 });
 
 const projectModel = mongoose.model("Project", projectSchema);

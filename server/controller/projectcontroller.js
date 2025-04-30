@@ -4,12 +4,16 @@ import projectService from "../services/project.service.js";
 const createproject = async (req, res) => {
   const {
     projectTitle,
-    title,
-    description,
-    dateOfcreation,
-    datOfcompletion,
-    status,
+    task: {
+      title,
+      description,
+      dateOfcreation,
+      datOfcompletion,
+      status,
+    } = {},
   } = req.body;
+  const creatorId = req.user._id;
+  
   try {
     const existProject = await projectModel.findOne({
       projectTitle,
@@ -23,6 +27,7 @@ const createproject = async (req, res) => {
     }
     const newProject = await projectService.createProject({
       projectTitle,
+      creatorId,
       task: {
         title,
         description,
@@ -31,10 +36,10 @@ const createproject = async (req, res) => {
         status,
       },
     });
-   return res.status(201).json({ newProject });
+    return res.status(201).json({ newProject });
   } catch (error) {
     console.log(error);
-   return res.status(500).json({ message: "error while creating tasks" });
+    return res.status(500).json({ message: "error while creating tasks" });
   }
 };
 
@@ -59,21 +64,21 @@ const updateproject = async (req, res) => {
     if (!project) {
       return res.status(404).json({ message: "Task not found in any project" });
     }
-   return res.status(200).json({ message: "Project updated successfullly" });
+    return res.status(200).json({ message: "Project updated successfullly" });
   } catch (error) {
-   return res
+    return res
       .status(500)
       .json({ message: "Internal server error while updating project", error });
-      
   }
 };
 
 const getallproject = async (req, res) => {
+  const creatorId = req.user._id;
   try {
-    const project = await projectModel.find({});
+    const project = await projectModel.find({ creatorId });
     res.status(200).json({ project });
   } catch (error) {
-   return res
+    return res
       .status(500)
       .json({ message: "Internal sever error while getting all projects" });
   }
@@ -89,7 +94,7 @@ const deletetask = async (req, res) => {
     );
     return res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
-   return res.status(500).json({ message: "Error while deleting task" });
+    return res.status(500).json({ message: "Error while deleting task" });
   }
 };
 
@@ -99,7 +104,7 @@ const deleteproject = async (req, res) => {
     const project = await projectModel.findOneAndDelete({ _id: projectId });
     return res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
-   return res.status(500).json({ message: "Error while deleting project" });
+    return res.status(500).json({ message: "Error while deleting project" });
   }
 };
 export default {
