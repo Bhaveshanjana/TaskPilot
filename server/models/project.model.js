@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema({
+  assignee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+  priority: {
+    type: String,
+    enum: ["Low", "Medium", "High", "Urgent"],
+    default: "Medium",
+  },
   title: {
     type: String,
     required: true,
@@ -11,8 +20,8 @@ const taskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "In Progress", "Completed"],
-    default: "Pending",
+    enum: ["To Do", "In Progress", "Done"],
+    default: "To Do",
   },
   dateOfCreation: {
     type: Date,
