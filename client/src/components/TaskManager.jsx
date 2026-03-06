@@ -33,9 +33,11 @@ export default function TaskManager() {
   // Get all project's
   useEffect(() => {
     const fetchProjects = async () => {
+      if (!currentOrganization) return;
+      
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/projects/getallproject`,
+          `${import.meta.env.VITE_BASE_URL}/projects/getallproject/${currentOrganization._id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -48,7 +50,7 @@ export default function TaskManager() {
       }
     };
     fetchProjects();
-  }, []);
+  }, [currentOrganization]);
 
   const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
@@ -69,6 +71,7 @@ export default function TaskManager() {
       } else {
         const dataToSend = {
           projectTitle: formData.projectTitle,
+          organizationId: currentOrganization._id,
           task: {
             title: formData.title,
             description: formData.description,
