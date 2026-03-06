@@ -6,13 +6,21 @@ import ProjectList from "./ProjectList";
 import { Plus } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useOrganization } from "../context/OrganizationContext";
 
 export default function TaskManager() {
   const [projects, setProjects] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navigate = useNavigate();
+  const {
+    organizations,
+    currentOrganization,
+    setCurrentOrganization,
+    loading,
+  } = useOrganization();
 
   const [formData, setFormData] = useState({
     projectTitle: "",
@@ -32,7 +40,7 @@ export default function TaskManager() {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         setProjects(res.data.project);
       } catch (error) {
@@ -55,7 +63,7 @@ export default function TaskManager() {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         toast.success(res.data.message);
       } else {
@@ -76,7 +84,7 @@ export default function TaskManager() {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         toast.success("Project created successfully");
       }
@@ -98,7 +106,7 @@ export default function TaskManager() {
   const handleDelete = async (task) => {
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/projects/${task._id}`
+        `${import.meta.env.VITE_BASE_URL}/projects/${task._id}`,
       );
       toast.success(res.data.message);
     } catch (error) {
@@ -132,7 +140,7 @@ export default function TaskManager() {
   const handleLogOut = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/users/logout`
+        `${import.meta.env.VITE_BASE_URL}/users/logout`,
       );
       localStorage.removeItem("token");
       navigate("/login");
@@ -149,14 +157,60 @@ export default function TaskManager() {
               TaskPilot
             </h1>
           </div>
-          <div className="flex gap-4">
-            <DarkMode />
+          <div className="relative">
             <button
-              onClick={handleLogOut}
-              className="text-sm bg-blue-400/50 rounded-md p-1 px-2 lg:text-sm lg:px-2 cursor-pointer"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-2 bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-md cursor-pointer"
             >
-              Logout
+              <span className="text-sm text-gray-800 dark:text-white">
+                Menu
+              </span>
             </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-gray-800 shadow-lg rounded-md border dark:border-gray-700 z-50">
+                {/* Dark Mode */}
+                <div className="p-3 border-b dark:border-gray-700">
+                  <DarkMode />
+                </div>
+
+                {/* Organization List */}
+                <div className="p-3 border-b dark:border-gray-700">
+                  <p className="text-xs text-gray-500 mb-2">Organizations</p>
+
+                  {loading ? (
+                    <p className="text-sm text-gray-400">Loading...</p>
+                  ) : (
+                    organizations.map((org) => (
+                      <button
+                        key={org._id}
+                        onClick={() => {
+                          setCurrentOrganization(org);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm ${
+                          currentOrganization?._id === org._id
+                            ? "font-semibold text-blue-600"
+                            : ""
+                        }`}
+                      >
+                        {org.name}
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                {/* Logout */}
+                <div className="p-3">
+                  <button
+                    onClick={handleLogOut}
+                    className="w-full text-left text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded text-sm"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
