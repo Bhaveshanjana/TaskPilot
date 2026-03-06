@@ -11,6 +11,8 @@ const createproject = async (req, res) => {
       dateOfcreation,
       datOfcompletion,
       status,
+      assignee,
+      priority,
     } = {},
   } = req.body;
   const ownerId = req.user._id;
@@ -40,6 +42,8 @@ const createproject = async (req, res) => {
         dateOfcreation,
         datOfcompletion,
         status,
+        assignee,
+        priority,
       },
     });
     return res.status(201).json({ newProject });
@@ -51,7 +55,9 @@ const createproject = async (req, res) => {
 
 const updateproject = async (req, res) => {
   const { taskId } = req.params;
-  const { title, description, dateOfcompletion, status } = req.body;
+  const userId = req.user._id;
+  const { title, description, dateOfcompletion, status, priority, assignee } =
+    req.body;
   try {
     const project = await projectModel.findOneAndUpdate(
       {
@@ -59,6 +65,8 @@ const updateproject = async (req, res) => {
       },
       {
         $set: {
+          "tasks.$.assignee": userId || assignee,
+          "tasks.$.priority": priority,
           "tasks.$.title": title,
           "tasks.$.description": description,
           "tasks.$.status": status,
