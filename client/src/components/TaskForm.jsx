@@ -1,6 +1,7 @@
 import React from "react";
 
-const STATUS_OPTIONS = ["Pending", "In Progress", "Completed"];
+const STATUS_OPTIONS = ["To Do", "In Progress", "Done"];
+const PRIORITY_OPTIONS = ["Low", "Medium", "High"];
 
 export default function TaskForm({
   formData,
@@ -8,6 +9,7 @@ export default function TaskForm({
   onSubmit,
   onCancel,
   isEditing,
+  teamMembers,
 }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -78,6 +80,54 @@ export default function TaskForm({
         ></textarea>
       </div>
 
+      <div className="mb-4">
+        <label
+          htmlFor="priority"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
+          priority
+        </label>
+        <select
+          id="priority"
+          name="priority"
+          value={formData.priority}
+          onChange={handleInputChange}
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer"
+        >
+          {PRIORITY_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-2 w-full max-w-sm">
+        <label
+          htmlFor="assignee"
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Assignee
+        </label>
+
+        <select
+          name="assignee"
+          id="assignee"
+          onChange={handleInputChange}
+          className="w-full rounded-lg border border-gray-300 dark:border-gray-600 
+    bg-white dark:bg-gray-800 
+    px-3 py-2 text-sm text-gray-800 dark:text-gray-200 
+    focus:outline-none focus:ring-2 focus:ring-blue-500 
+    focus:border-blue-500 transition"
+        >
+          <option value="">Select team member</option>
+
+          {teamMembers.map((member) => (
+            <option key={member._id} value={member._id}>
+              {member.user.username}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="mb-4">
         <label
           htmlFor="status"

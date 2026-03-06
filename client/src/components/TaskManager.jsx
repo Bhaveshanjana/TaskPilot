@@ -26,15 +26,17 @@ export default function TaskManager() {
     projectTitle: "",
     title: "",
     description: "",
-    status: "Pending",
+    status: "To Do",
     datOfcompletion: "",
+    priority: "Medium",
+    assignee: null,
   });
 
   // Get all project's
   useEffect(() => {
     const fetchProjects = async () => {
       if (!currentOrganization) return;
-      
+
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/projects/getallproject/${currentOrganization._id}`,
@@ -78,6 +80,8 @@ export default function TaskManager() {
             status: formData.status,
             dateOfcreation: new Date().toISOString(),
             datOfcompletion: "",
+            priority: formData.priority,
+            assignee: formData.assignee,
           },
         };
         const res = await axios.post(
@@ -97,9 +101,11 @@ export default function TaskManager() {
       setFormData({
         title: "",
         description: "",
-        status: "Pending",
+        status: "To Do",
         projectTitle: "",
         dateOfcompletion: "",
+        priority: "Medium",
+        assignee: "",
       });
     } catch (error) {
       console.log(error.response.data.message);
@@ -135,8 +141,10 @@ export default function TaskManager() {
     setFormData({
       title: "",
       description: "",
-      status: "Pending",
+      status: "To Do",
       projectTitle: "",
+      priority: "Medium", // <-- ADD THIS
+      assignee: "",
     });
   };
 
@@ -234,6 +242,7 @@ export default function TaskManager() {
 
         {isFormOpen && (
           <TaskForm
+            teamMembers={currentOrganization?.members}
             formData={formData}
             setFormData={setFormData}
             isEditing={!!editingTask}
