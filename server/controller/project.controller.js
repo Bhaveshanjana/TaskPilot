@@ -55,7 +55,8 @@ const createproject = async (req, res) => {
 
 const updateproject = async (req, res) => {
   const { taskId } = req.params;
-  const userId = req.user._id;
+  const userId = req.user?._id;
+
   const { title, description, dateOfcompletion, status, priority, assignee } =
     req.body;
   try {
@@ -92,7 +93,9 @@ const getallproject = async (req, res) => {
     return res.status(400).json({ message: "Organization id is required" });
   }
   try {
-    const project = await projectModel.find({ organization: orgId });
+    const project = await projectModel
+      .find({ organization: orgId })
+      .populate("tasks.assignee", "username email");
     res.status(200).json({ project });
   } catch (error) {
     return res
