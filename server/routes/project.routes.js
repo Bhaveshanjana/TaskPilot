@@ -7,15 +7,19 @@ const router = express.Router();
 router.post(
   "/createproject",
   authMiddleware.authUser,
-  projectController.createproject
+  projectController.createproject,
 );
 
-router.put("/updateproject/:taskId", projectController.updateproject);
+router.put(
+  "/updateproject/:taskId",
+  authMiddleware.authUser,
+  projectController.updateproject,
+);
 
 router.get(
   "/getallproject/:orgId",
   authMiddleware.authUser,
-  projectController.getallproject
+  projectController.getallproject,
 );
 
 router.delete("/:taskId", projectController.deletetask);
