@@ -38,7 +38,8 @@ const createOrganization = async (req, res) => {
 const getUserOrganization = async (req, res) => {
   try {
     const userId = req.user._id;
-    const organizations  = await organizationModel.find({ "members.user": userId });
+    const organizations  = await organizationModel.find({ "members.user": userId })
+    .populate("members.user","username email");
     return res.status(200).json({
       message: "User organizations fetched successfully",
       organizations ,
