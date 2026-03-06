@@ -23,7 +23,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
             </h3>
             <span
               className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
-                task.status
+                task.status,
               )}`}
             >
               {task.status}
@@ -40,6 +40,10 @@ export default function TaskCard({ task, onEdit, onDelete }) {
                 {new Date(task.dateOfCompletion).toLocaleDateString()}
               </p>
             )}
+          </div>
+          <div>
+            <h5 className="text-red-500">Priority: {task.priority}</h5>
+            <h5>Assignee: {task?.assignee?.username}</h5>
           </div>
         </div>
         <div className="flex gap-2">

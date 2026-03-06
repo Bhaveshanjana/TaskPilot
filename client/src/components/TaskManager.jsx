@@ -132,6 +132,8 @@ export default function TaskManager() {
       status: task.status,
       projectTitle: "", // Uneditable during edit
       dateOfcompletion: task.dateOfcompletion || "",
+      priority: task.priority,
+      assignee: task.assignee?._id,
     });
   };
 
@@ -143,7 +145,7 @@ export default function TaskManager() {
       description: "",
       status: "To Do",
       projectTitle: "",
-      priority: "Medium", // <-- ADD THIS
+      priority: "Medium",
       assignee: "",
     });
   };

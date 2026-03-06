@@ -112,6 +112,7 @@ export default function TaskForm({
         <select
           name="assignee"
           id="assignee"
+          value={formData.assignee || ""}
           onChange={handleInputChange}
           className="w-full rounded-lg border border-gray-300 dark:border-gray-600 
     bg-white dark:bg-gray-800 
