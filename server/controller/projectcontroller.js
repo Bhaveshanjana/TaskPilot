@@ -4,6 +4,7 @@ import projectService from "../services/project.service.js";
 const createproject = async (req, res) => {
   const {
     projectTitle,
+    organizationId,
     task: {
       title,
       description,
@@ -12,9 +13,12 @@ const createproject = async (req, res) => {
       status,
     } = {},
   } = req.body;
-  const creatorId = req.user._id;
-  
+  const ownerId = req.user._id;
+
   try {
+    if (!organizationId) {
+      return res.status(400).json({ message: "Organization id is required" });
+    }
     const existProject = await projectModel.findOne({
       projectTitle,
       "tasks.title": title,
@@ -27,7 +31,9 @@ const createproject = async (req, res) => {
     }
     const newProject = await projectService.createProject({
       projectTitle,
-      creatorId,
+      organization: organizationId,
+      owner: ownerId,
+      members: [ownerId],
       task: {
         title,
         description,
@@ -59,7 +65,7 @@ const updateproject = async (req, res) => {
           "tasks.$.dateOfCompletion": dateOfcompletion,
         },
       },
-      { new: true } // return updated doc
+      { new: true }, // return updated doc
     );
     if (!project) {
       return res.status(404).json({ message: "Task not found in any project" });
@@ -73,9 +79,12 @@ const updateproject = async (req, res) => {
 };
 
 const getallproject = async (req, res) => {
-  const creatorId = req.user._id;
+  const { orgId } = req.params;
+  if (!orgId) {
+    return res.status(400).json({ message: "Organization id is required" });
+  }
   try {
-    const project = await projectModel.find({ creatorId });
+    const project = await projectModel.find({ organization: orgId });
     res.status(200).json({ project });
   } catch (error) {
     return res
@@ -90,7 +99,7 @@ const deletetask = async (req, res) => {
     const task = await projectModel.findOneAndUpdate(
       { "tasks._id": taskId },
       { $pull: { tasks: { _id: taskId } } },
-      { new: true }
+      { new: true },
     );
     return res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {

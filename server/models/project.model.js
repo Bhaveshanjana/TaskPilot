@@ -23,17 +23,32 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-const projectSchema = new mongoose.Schema({
-  projectTitle: {
-    type: String,
-    required: true,
+const projectSchema = new mongoose.Schema(
+  {
+    projectTitle: {
+      type: String,
+      required: true,
+    },
+    tasks: [taskSchema],
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+    organization: {
+      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+    },
   },
-  tasks: [taskSchema],
-  creatorId: {
-    ref: "user",
-    type: String,
-  },
-});
+  { timestamps: true },
+);
 
 const projectModel = mongoose.model("Project", projectSchema);
 

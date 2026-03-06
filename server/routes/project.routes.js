@@ -13,7 +13,7 @@ router.post(
 router.put("/updateproject/:taskId", projectController.updateproject);
 
 router.get(
-  "/getallproject",
+  "/getallproject/:orgId",
   authMiddleware.authUser,
   projectController.getallproject
 );
