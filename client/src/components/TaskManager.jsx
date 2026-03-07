@@ -30,6 +30,7 @@ export default function TaskManager() {
     datOfcompletion: "",
     priority: "Medium",
     assignee: null,
+    dueDate:"",
   });
 
   // Get all project's
@@ -82,8 +83,11 @@ export default function TaskManager() {
             datOfcompletion: "",
             priority: formData.priority,
             assignee: formData.assignee,
+            dueDate:formData.dueDate,
           },
         };
+        console.log("duedate",dataToSend);
+        
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/projects/createproject`,
           dataToSend,
@@ -106,6 +110,7 @@ export default function TaskManager() {
         dateOfcompletion: "",
         priority: "Medium",
         assignee: "",
+        dueDate:"",
       });
     } catch (error) {
       console.log(error.response.data.message);
@@ -134,6 +139,7 @@ export default function TaskManager() {
       dateOfcompletion: task.dateOfcompletion || "",
       priority: task.priority,
       assignee: task.assignee?._id,
+      dueDate:task.dueDate,
     });
   };
 
@@ -147,6 +153,7 @@ export default function TaskManager() {
       projectTitle: "",
       priority: "Medium",
       assignee: "",
+      dueDate:"",
     });
   };
 

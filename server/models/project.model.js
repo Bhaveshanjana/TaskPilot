@@ -30,6 +30,10 @@ const taskSchema = new mongoose.Schema({
   dateOfCompletion: {
     type: Date,
   },
+  dueDate:{
+    type:Date,
+    required:true
+  }
 });
 
 const projectSchema = new mongoose.Schema(

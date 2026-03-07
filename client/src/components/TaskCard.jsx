@@ -44,6 +44,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
           <div>
             <h5 className="text-red-500">Priority: {task.priority}</h5>
             <h5>Assignee: {task?.assignee?.username}</h5>
+            <h5>DueDate {new Date(task.dueDate).toLocaleDateString()}</h5>
           </div>
         </div>
         <div className="flex gap-2">

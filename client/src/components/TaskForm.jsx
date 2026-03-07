@@ -150,6 +150,21 @@ export default function TaskForm({
           ))}
         </select>
       </div>
+      {!isEditing && (
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Due Date
+          </label>
+          <input
+            type="date"
+            value={formData.dueDate}
+            onChange={(e) =>
+              setFormData({ ...formData, dueDate: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white cursor-pointer"
+          />
+        </div>
+      )}
       {isEditing && (
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">

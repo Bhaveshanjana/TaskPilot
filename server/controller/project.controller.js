@@ -13,6 +13,7 @@ const createproject = async (req, res) => {
       status,
       assignee,
       priority,
+      dueDate,
     } = {},
   } = req.body;
   const ownerId = req.user._id;
@@ -44,6 +45,7 @@ const createproject = async (req, res) => {
         status,
         assignee,
         priority,
+        dueDate,
       },
     });
     return res.status(201).json({ newProject });
@@ -56,6 +58,7 @@ const createproject = async (req, res) => {
 const updateproject = async (req, res) => {
   const { taskId } = req.params;
   const userId = req.user?._id;
+  const { dueDate } = req.body;
 
   const { title, description, dateOfcompletion, status, priority, assignee } =
     req.body;
@@ -72,6 +75,7 @@ const updateproject = async (req, res) => {
           "tasks.$.description": description,
           "tasks.$.status": status,
           "tasks.$.dateOfCompletion": dateOfcompletion,
+          "tasks.$.dueDate": dueDate,
         },
       },
       { new: true }, // return updated doc

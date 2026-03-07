@@ -14,7 +14,8 @@ const createProject = async ({
     !task.status ||
     !organization ||
     !owner ||
-    !members
+    !members ||
+    !task.dueDate
   )
     throw new Error("Please provide all filds");
 
