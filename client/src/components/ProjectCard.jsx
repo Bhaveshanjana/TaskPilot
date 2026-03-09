@@ -3,12 +3,13 @@ import TaskCard from "./TaskCard";
 import { Trash2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import KanbanBoard from "./KanbanBoard";
 
 export default function ProjectCard({ project, onDelete, onEdit }) {
   const deleteProject = async (projectId) => {
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/projects/deletedproject/${projectId}`
+        `${import.meta.env.VITE_BASE_URL}/projects/deletedproject/${projectId}`,
       );
       toast.success(res.data.message);
     } catch (error) {
@@ -31,16 +32,11 @@ export default function ProjectCard({ project, onDelete, onEdit }) {
           No tasks yet. Click "Add New Task" to create one.
         </div>
       ) : (
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {project.tasks.map((task) => (
-            <TaskCard
-              key={task._id}
-              task={task}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
-          ))}
-        </ul>
+        <KanbanBoard
+          tasks={project.tasks}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
       )}
     </div>
   );

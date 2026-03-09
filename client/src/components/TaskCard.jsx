@@ -14,7 +14,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
   };
 
   return (
-    <li className="cursor-pointer p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+    <div className="cursor-pointer p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -62,6 +62,6 @@ export default function TaskCard({ task, onEdit, onDelete }) {
           </button>
         </div>
       </div>
-    </li>
+    </div>
   );
 }
