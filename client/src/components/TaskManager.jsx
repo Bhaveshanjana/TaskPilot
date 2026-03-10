@@ -30,28 +30,27 @@ export default function TaskManager() {
     datOfcompletion: "",
     priority: "Medium",
     assignee: null,
-    dueDate:"",
+    dueDate: "",
   });
 
   // Get all project's
-  useEffect(() => {
-    const fetchProjects = async () => {
-      if (!currentOrganization) return;
-
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/projects/getallproject/${currentOrganization._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+  const fetchProjects = async () => {
+    if (!currentOrganization) return;
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/projects/getallproject/${currentOrganization._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        );
-        setProjects(res.data.project);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+        },
+      );
+      setProjects(res.data.project);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
     fetchProjects();
   }, [currentOrganization]);
 
@@ -83,11 +82,11 @@ export default function TaskManager() {
             datOfcompletion: "",
             priority: formData.priority,
             assignee: formData.assignee,
-            dueDate:formData.dueDate,
+            dueDate: formData.dueDate,
           },
         };
-        console.log("duedate",dataToSend);
-        
+        console.log("duedate", dataToSend);
+
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/projects/createproject`,
           dataToSend,
@@ -110,7 +109,7 @@ export default function TaskManager() {
         dateOfcompletion: "",
         priority: "Medium",
         assignee: "",
-        dueDate:"",
+        dueDate: "",
       });
     } catch (error) {
       console.log(error.response.data.message);
@@ -139,7 +138,7 @@ export default function TaskManager() {
       dateOfcompletion: task.dateOfcompletion || "",
       priority: task.priority,
       assignee: task.assignee?._id,
-      dueDate:task.dueDate,
+      dueDate: task.dueDate,
     });
   };
 
@@ -153,7 +152,7 @@ export default function TaskManager() {
       projectTitle: "",
       priority: "Medium",
       assignee: "",
-      dueDate:"",
+      dueDate: "",
     });
   };
 
@@ -264,6 +263,7 @@ export default function TaskManager() {
           projects={projects}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          onStatusChange={fetchProjects}
         />
       </main>
     </div>

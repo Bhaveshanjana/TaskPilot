@@ -1,7 +1,12 @@
 import React from "react";
 import ProjectCard from "./ProjectCard";
 
-export default function ProjectList({ projects, onDelete, onEdit }) {
+export default function ProjectList({
+  projects,
+  onDelete,
+  onEdit,
+  onStatusChange,
+}) {
   if (!projects.length) {
     return (
       <p className="text-center text-gray-500 dark:text-gray-400">
@@ -18,6 +23,7 @@ export default function ProjectList({ projects, onDelete, onEdit }) {
           project={project}
           onDelete={onDelete}
           onEdit={onEdit}
+          onStatusChange={onStatusChange}
         />
       ))}
     </div>

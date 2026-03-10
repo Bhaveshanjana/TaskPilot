@@ -5,7 +5,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import KanbanBoard from "./KanbanBoard";
 
-export default function ProjectCard({ project, onDelete, onEdit }) {
+export default function ProjectCard({
+  project,
+  onDelete,
+  onEdit,
+  onStatusChange,
+}) {
   const deleteProject = async (projectId) => {
     try {
       const res = await axios.delete(
@@ -36,6 +41,8 @@ export default function ProjectCard({ project, onDelete, onEdit }) {
           tasks={project.tasks}
           onEdit={onEdit}
           onDelete={onDelete}
+          onStatusChange={onStatusChange}
+          projectId={project._id}
         />
       )}
     </div>
