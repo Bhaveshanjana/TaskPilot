@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Edit, Trash2 } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-export default function TaskCard({ task, onEdit, onDelete }) {
+export default function TaskCard({
+  task,
+  onEdit,
+  onDelete,
+  projectId,
+  onStatusChange,
+}) {
+  const [showComments, setShowComments] = useState(false);
+  const [newComment, setNewComment] = useState("");
+
   const getStatusColor = (status) => {
     switch (status) {
       case "Done":
@@ -10,6 +21,32 @@ export default function TaskCard({ task, onEdit, onDelete }) {
         return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
       default:
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+    try {
+      axios.post(
+        `${import.meta.env.VITE_BASE_URL}/projects/${projectId}/tasks/${task._id}/comment`,
+        { text: newComment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      toast.success("comment added!");
+      if (onStatusChange) {
+        onStatusChange();
+      }
+      if (onStatusChange) {
+        onStatusChange();
+      }
+
+      setNewComment("");
+    } catch (error) {
+      toast.error("Faild to add comment");
     }
   };
 
@@ -61,6 +98,58 @@ export default function TaskCard({ task, onEdit, onDelete }) {
             <Trash2 size={18} />
           </button>
         </div>
+      </div>
+      {/* Comments Section Toggle */}
+      <div className="mt-4 border-t dark:border-gray-700 pt-2">
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="text-sm text-blue-500 hover:text-blue-700 font-medium"
+        >
+          {showComments
+            ? "Hide Comments"
+            : `View Comments (${task.comments?.length || 0})`}
+        </button>
+
+        {showComments && (
+          <div className="mt-3 space-y-3">
+            {/* List Existing Comments */}
+            <div className="max-h-32 overflow-y-auto space-y-2">
+              {task.comments?.map((comment, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-100 dark:bg-gray-700 p-2 rounded text-sm"
+                >
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">
+                    {comment.author?.username || "Unknown"}:{" "}
+                  </span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    {comment.text}
+                  </span>
+                </div>
+              ))}
+              {(!task.comments || task.comments.length === 0) && (
+                <p className="text-xs text-gray-500">No comments yet.</p>
+              )}
+            </div>
+
+            {/* Add New Comment Input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Write a comment..."
+                className="flex-1 text-sm p-1.5 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+              />
+              <button
+                onClick={handleAddComment}
+                className="bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700"
+              >
+                Post
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

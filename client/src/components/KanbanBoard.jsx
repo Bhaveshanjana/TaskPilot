@@ -1,10 +1,46 @@
 import React from "react";
 import TaskCard from "./TaskCard";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const KanbanBoard = ({ tasks, onEdit, onDelete }) => {
-  const handleDragEnd = (result) => {
-    console.log("Drag", result);
+const KanbanBoard = ({
+  tasks,
+  onEdit,
+  onDelete,
+  onStatusChange,
+  projectId,
+}) => {
+  const handleDragEnd = async (result) => {
+    const { destination, draggableId, source } = result;
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    const newStatus = destination.droppableId;
+    const draggedTask = tasks.find((t) => t._id === draggableId);
+    const updatedTaskData = { ...draggedTask, status: newStatus };
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/projects/updateproject/${draggableId}`,
+        updatedTaskData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      if (onStatusChange) {
+        onStatusChange();
+      }
+      toast.success(`Task moved to ${newStatus}`);
+    } catch (error) {
+      console.log(error);
+      toast.error("Faild to move task");
+    }
   };
   const todoTasks = tasks.filter((task) => task.status === "To Do");
   const inProgressTasks = tasks.filter((task) => task.status === "In Progress");
@@ -23,6 +59,8 @@ const KanbanBoard = ({ tasks, onEdit, onDelete }) => {
             task={task}
             onDelete={onDelete}
             onEdit={onEdit}
+            projectId={projectId}
+            onStatusChange={onStatusChange}
           />
         </div>
       )}
