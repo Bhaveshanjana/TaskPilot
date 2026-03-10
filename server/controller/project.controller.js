@@ -99,7 +99,7 @@ const getallproject = async (req, res) => {
   try {
     const project = await projectModel
       .find({ organization: orgId })
-      .populate("tasks.assignee", "username email");
+      .populate("tasks.assignee tasks.comments.author", "username email");
     res.status(200).json({ project });
   } catch (error) {
     return res
@@ -131,10 +131,47 @@ const deleteproject = async (req, res) => {
     return res.status(500).json({ message: "Error while deleting project" });
   }
 };
+
+const addComment = async (req, res) => {
+  const { projectId, taskId } = req.params;
+  const { text } = req.body;
+  const authorId = req.user._id;
+  try {
+    const project = await projectModel
+      .findOneAndUpdate(
+        {
+          _id: projectId,
+          "tasks._id": taskId,
+        },
+        {
+          $push: {
+            "tasks.$.comments": {
+              text,
+              author: authorId,
+            },
+          },
+        },
+        { new: true },
+      )
+      .populate("tasks.comments.author", "username email");
+    if (!project) {
+      return res.status(404).json({ message: "Faild to add comments" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Comment added successfully", project });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error while adding comment" });
+  }
+};
+
 export default {
   createproject,
   updateproject,
   getallproject,
   deletetask,
   deleteproject,
+  addComment,
 };

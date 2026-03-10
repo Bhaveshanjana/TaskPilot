@@ -30,10 +30,27 @@ const taskSchema = new mongoose.Schema({
   dateOfCompletion: {
     type: Date,
   },
-  dueDate:{
-    type:Date,
-    required:true
-  }
+  dueDate: {
+    type: Date,
+    required: true,
+  },
+  comments: [
+    {
+      text: {
+        type: String,
+        required: true,
+      },
+      author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 const projectSchema = new mongoose.Schema(

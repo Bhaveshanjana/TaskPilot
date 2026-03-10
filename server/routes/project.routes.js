@@ -10,6 +10,12 @@ router.post(
   projectController.createproject,
 );
 
+router.post(
+  "/:projectId/tasks/:taskId/comment",
+  authMiddleware.authUser,
+  projectController.addComment,
+);
+
 router.put(
   "/updateproject/:taskId",
   authMiddleware.authUser,
