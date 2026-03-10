@@ -62,6 +62,22 @@ const updateproject = async (req, res) => {
 
   const { title, description, dateOfcompletion, status, priority, assignee } =
     req.body;
+
+  // get old Taskdata
+  const projectDoc = await projectModel.findOne({ "tasks._id": taskId });
+  if (!projectDoc)
+    return res.status(404).json({
+      message: "Task not found",
+    });
+  const oldTask = projectDoc.tasks.id(taskId);
+
+  let historyLog = "Updated task details"; //default fallback
+  if (status && status !== oldTask.status) {
+    historyLog = `Moved from ${oldTask.status} to ${status}`;
+  } else if (priority && priority !== oldTask.priority) {
+    historyLog = `Changed priority to ${priority}`;
+  }
+
   try {
     const project = await projectModel.findOneAndUpdate(
       {
@@ -76,6 +92,12 @@ const updateproject = async (req, res) => {
           "tasks.$.status": status,
           "tasks.$.dateOfCompletion": dateOfcompletion,
           "tasks.$.dueDate": dueDate,
+        },
+        $push: {
+          "tasks.$.history": {
+            action: historyLog,
+            user: userId || req.user._id,
+          },
         },
       },
       { new: true }, // return updated doc
@@ -99,7 +121,7 @@ const getallproject = async (req, res) => {
   try {
     const project = await projectModel
       .find({ organization: orgId })
-      .populate("tasks.assignee tasks.comments.author", "username email");
+      .populate("tasks.assignee tasks.comments.author tasks.history.user", "username email");
     res.status(200).json({ project });
   } catch (error) {
     return res

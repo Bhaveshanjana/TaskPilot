@@ -51,6 +51,22 @@ const taskSchema = new mongoose.Schema({
       },
     },
   ],
+  history: [
+    {
+      action: {
+        type: String,
+        required: true,
+      },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+      timestamps: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 const projectSchema = new mongoose.Schema(

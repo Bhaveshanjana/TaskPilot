@@ -12,6 +12,7 @@ export default function TaskCard({
 }) {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
+  const [showActivity, setShowActivity] = useState(false);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -148,6 +149,41 @@ export default function TaskCard({
                 Post
               </button>
             </div>
+          </div>
+        )}
+      </div>
+      {/* Activity Log Section Toggle */}
+      <div className="mt-4 border-t dark:border-gray-700 pt-2">
+        <button
+          onClick={() => setShowActivity(!showActivity)}
+          className="text-sm text-gray-500 hover:text-gray-700 font-medium"
+        >
+          {showActivity ? "Hide Activity Log" : "View Activity Log"}
+        </button>
+
+        {showActivity && (
+          <div className="mt-3 space-y-2 max-h-32 overflow-y-auto">
+            {task.history && task.history.length > 0 ? (
+              task.history
+                .slice()
+                .reverse()
+                .map((log, index) => (
+                  <div
+                    key={index}
+                    className="text-xs text-gray-600 dark:text-gray-400 border-l-2 border-gray-300 dark:border-gray-600 pl-2 ml-1"
+                  >
+                    <span className="font-semibold">
+                      {log.user?.username || "Someone"}
+                    </span>{" "}
+                    {log.action}
+                    <div className="text-[10px] text-gray-400 mt-0.5">
+                      {new Date(log.timestamps).toLocaleString()}
+                    </div>
+                  </div>
+                ))
+            ) : (
+              <p className="text-xs text-gray-500">No activity yet.</p>
+            )}
           </div>
         )}
       </div>
