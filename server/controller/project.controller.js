@@ -121,7 +121,10 @@ const getallproject = async (req, res) => {
   try {
     const project = await projectModel
       .find({ organization: orgId })
-      .populate("tasks.assignee tasks.comments.author tasks.history.user", "username email");
+      .populate(
+        "tasks.assignee tasks.comments.author tasks.history.user",
+        "username email",
+      );
     res.status(200).json({ project });
   } catch (error) {
     return res
@@ -189,6 +192,91 @@ const addComment = async (req, res) => {
   }
 };
 
+const addColumn = async (req, res) => {
+  const { projectId } = req.params;
+  const { name, color } = req.body;
+  try {
+    const project = await projectModel.findByIdAndUpdate(
+      projectId,
+      {
+        $push: {
+          columns: {
+            name,
+            color,
+          },
+        },
+      },
+      { new: true },
+    );
+    if (!project) {
+      return res.status(400).json({ message: "Falid to add column" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Column added successfully", project });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error while adding coloumn", error });
+  }
+};
+
+const updateColumn = async (req, res) => {
+  const { projectId, columnId } = req.params;
+  const { name, color } = req.body;
+  try {
+    const projectDoc = await projectModel.findOne({ _id: projectId });
+    if (!projectDoc) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    const columnToUpdate = projectDoc.columns.id(columnId);
+    if (!columnToUpdate) {
+      return res.status(404).json({ message: "Column not found" });
+    }
+    const oldName = columnToUpdate.name;
+    columnToUpdate.name = name;
+    columnToUpdate.color = color;
+    if (oldName !== name) {
+      projectDoc.tasks.forEach((task) => {
+        if (task.status === oldName) task.status = name;
+      });
+    }
+    await projectDoc.save();
+    return res
+      .status(200)
+      .json({ message: "Column updated successfully", updateData: projectDoc });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error while updating column", error });
+  }
+};
+
+const deleteColumn = async (req, res) => {
+  const { projectId, columnId } = req.params;
+  try {
+    const project = await projectModel.findByIdAndUpdate(
+      projectId,
+      {
+        $pull: {
+          columns: {
+            _id: columnId,
+          },
+        },
+      },
+      { new: true },
+    );
+    if (!project) {
+      return res.status(400).json({ message: "Falid to delete column" });
+    }
+    return res.status(200).json({ message: "Column deleted successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error while deleting column", error });
+  }
+};
+
 export default {
   createproject,
   updateproject,
@@ -196,4 +284,7 @@ export default {
   deletetask,
   deleteproject,
   addComment,
+  addColumn,
+  updateColumn,
+  deleteColumn,
 };

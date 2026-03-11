@@ -20,7 +20,6 @@ const taskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["To Do", "In Progress", "Done"],
     default: "To Do",
   },
   dateOfCreation: {
@@ -91,6 +90,34 @@ const projectSchema = new mongoose.Schema(
       required: true,
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",
+    },
+    columns: {
+      type: [
+        {
+          name: {
+            type: String,
+            required: true,
+          },
+          color: {
+            type: String,
+            default: "gray",
+          },
+        },
+      ],
+      default: [
+        {
+          name: "To Do",
+          color: "gray",
+        },
+        {
+          name: "In Progress",
+          color: "blue",
+        },
+        {
+          name: "Done",
+          color: "green",
+        },
+      ],
     },
   },
   { timestamps: true },

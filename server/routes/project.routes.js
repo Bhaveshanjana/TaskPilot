@@ -32,4 +32,22 @@ router.delete("/:taskId", projectController.deletetask);
 
 router.delete("/deletedproject/:projectId", projectController.deleteproject);
 
+router.post(
+  "/:projectId/columns",
+  authMiddleware.authUser,
+  projectController.addColumn,
+);
+
+router.put(
+  "/:projectId/columns/:columnId",
+  authMiddleware.authUser,
+  projectController.updateColumn,
+);
+
+router.delete(
+  "/:projectId/columns/:columnId",
+  authMiddleware.authUser,
+  projectController.deleteColumn,
+);
+
 export default router;
