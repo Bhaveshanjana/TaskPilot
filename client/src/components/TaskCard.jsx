@@ -47,7 +47,7 @@ export default function TaskCard({
 
       setNewComment("");
     } catch (error) {
-      toast.error("Faild to add comment");
+      toast.error(error?.message || "Faild to add comment");
     }
   };
 

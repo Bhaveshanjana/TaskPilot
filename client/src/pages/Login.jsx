@@ -1,13 +1,10 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import { UserDataContext } from "../context/userContext";
-import { GoHome } from "react-icons/go";
 import DarkMode from "../components/DarkMode";
 
-const login = () => {
-  //   const { user, setUser } = useContext(UserDataContext);
+const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,17 +23,17 @@ const login = () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/users/login`,
-        newUser
+        newUser,
       );
       const data = response.data;
       localStorage.setItem("token", data.token);
       toast.success(`Welcome ${response.data.user.username}`);
       navigate("/");
     } catch (error) {
-      if (error.response.data.errors) {
+      if (error?.response?.data?.errors) {
         toast.error(error.response.data.errors[0].msg);
       }
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     }
     setEmail("");
     setPassword("");
@@ -106,4 +103,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

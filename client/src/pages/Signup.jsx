@@ -1,11 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { GoHome } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import DarkMode from "../components/DarkMode";
 
-const signup = () => {
+const Signup = () => {
   const [username, setUsername] = useState("");
   const [country, setCountry] = useState("");
   const [email, setEmail] = useState("");
@@ -32,10 +31,10 @@ const signup = () => {
       toast.success("User register successfully");
       navigate("/login");
     } catch (error) {
-      if (error.response.data.errors) {
+      if (error?.response?.data?.errors) {
         toast.error(error.response.data.errors[0].msg);
       }
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     }
     setUsername("");
     setEmail("");
@@ -126,4 +125,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;

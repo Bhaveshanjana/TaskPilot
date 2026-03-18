@@ -88,7 +88,7 @@ export default function TaskManager() {
         };
         console.log("duedate", dataToSend);
 
-        const res = await axios.post(
+          await axios.post(
           `${import.meta.env.VITE_BASE_URL}/projects/createproject`,
           dataToSend,
           {
