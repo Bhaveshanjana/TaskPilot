@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useOrganization } from "../context/OrganizationContext";
+import NotificationBell from "./NotificationBell";
 
 export default function TaskManager() {
   const [projects, setProjects] = useState([]);
@@ -177,6 +178,7 @@ export default function TaskManager() {
             </h1>
           </div>
           <div className="relative">
+            <NotificationBell />
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center gap-2 bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-md cursor-pointer"

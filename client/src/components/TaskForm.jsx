@@ -123,7 +123,7 @@ export default function TaskForm({
           <option value="">Select team member</option>
 
           {teamMembers.map((member) => (
-            <option key={member._id} value={member._id}>
+            <option key={member._id} value={member.user._id}>
               {member.user.username}
             </option>
           ))}

@@ -1,6 +1,7 @@
 import express from "express";
 import userController from "../controller/user.controller.js";
 import { body } from "express-validator";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -15,8 +16,9 @@ router.post(
       .isLength({ min: 5 })
       .withMessage("Password must be 5 characters long"),
   ],
-  userController.registerUser
+  userController.registerUser,
 );
+
 router.post(
   "/login",
   [
@@ -25,7 +27,25 @@ router.post(
       .isLength({ min: 5 })
       .withMessage("password must be 5 characters long"),
   ],
-  userController.loginUser
+  userController.loginUser,
+);
+
+router.put(
+  "/notifications/:notificationId/read",
+  authMiddleware.authUser,
+  userController.markNotificationAsRead,
+);
+
+router.delete(
+  "/notifications",
+  authMiddleware.authUser,
+  userController.clearAllNotifications,
+);
+
+router.get(
+  "/notifications",
+  authMiddleware.authUser,
+  userController.getNotifications,
 );
 router.get("/logout", userController.logOutUser);
 

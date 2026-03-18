@@ -1,5 +1,6 @@
 import projectModel from "../models/project.model.js";
 import projectService from "../services/project.service.js";
+import userModel from "../models/user.model.js";
 
 const createproject = async (req, res) => {
   const {
@@ -48,6 +49,17 @@ const createproject = async (req, res) => {
         dueDate,
       },
     });
+    if (assignee) {
+      await userModel.findByIdAndUpdate(assignee, {
+        $push: {
+          notifications: {
+            type: "Assignment",
+            message: `You were assigned to new task:${title}`,
+            projectId: newProject._id,
+          },
+        },
+      });
+    }
     return res.status(201).json({ newProject });
   } catch (error) {
     console.log(error);

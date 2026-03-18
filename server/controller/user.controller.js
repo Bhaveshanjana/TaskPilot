@@ -51,4 +51,68 @@ const logOutUser = async (req, res, next) => {
   return res.status(200).json({ message: "User logged out" });
 };
 
-export default { loginUser, registerUser, logOutUser };
+const markNotificationAsRead = async (req, res) => {
+  const { notificationId } = req.params;
+  const userId = req.user._id;
+  try {
+    const user = await userModel.findOneAndUpdate(
+      {
+        _id: userId,
+        "notifications._id": notificationId,
+      },
+      {
+        $set: {
+          "notifications.$.isRead": true,
+        },
+      },
+      { new: true },
+    );
+    return res.status(200).json({
+      message: "Notification marked as read",
+      notifications: user.notifications,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error while marking notification as read",
+    });
+  }
+};
+
+const clearAllNotifications = async (req, res) => {
+  const userId = req.user._id;
+  const user = await userModel.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        notifications: [],
+      },
+    },
+    { new: true },
+  );
+  return res.status(200).json({
+    message: "All notifications cleared",
+    notifications: user.notifications,
+  });
+};
+
+const getNotifications = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const user = await userModel.findById(userId);
+    return res.status(200).json({ notifications: user.notifications });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error while getting notifications" });
+  }
+};
+
+export default {
+  loginUser,
+  registerUser,
+  logOutUser,
+  markNotificationAsRead,
+  clearAllNotifications,
+  getNotifications,
+};

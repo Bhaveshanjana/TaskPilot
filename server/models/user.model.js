@@ -24,9 +24,33 @@ const userSchema = new mongoose.Schema({
   organizations: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization"
-    }
-  ]
+      ref: "Organization",
+    },
+  ],
+  notifications: [
+    {
+      type: {
+        type: String,
+      },
+      message: String,
+      relatedTask: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+      projectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+      isRead: {
+        type: Boolean,
+        default: false,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 //Generating Token-
