@@ -159,7 +159,7 @@ export default function TaskManager() {
 
   const handleLogOut = async () => {
     try {
-      const res = await axios.get(
+        await axios.get(
         `${import.meta.env.VITE_BASE_URL}/users/logout`,
       );
       localStorage.removeItem("token");

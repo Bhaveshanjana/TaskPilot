@@ -24,7 +24,7 @@ const Signup = () => {
 
     // Api call for register user
     try {
-      const response = await axios.post(
+        await axios.post(
         `${import.meta.env.VITE_BASE_URL}/users/register`,
         newUser
       );
