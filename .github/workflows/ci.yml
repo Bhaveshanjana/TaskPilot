@@ -29,7 +29,8 @@ jobs:
       - name: Install dependencies (Client)
         run: |
           cd client
-          pnpm install --no-frozen-lockfile
+          rm -f pnpm-lock.yaml
+          pnpm install --force
 
       - name: Lint client
         run: |
