@@ -26,13 +26,11 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: "./client/pnpm-lock.yaml"
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
       - name: Install dependencies (Client)
         run: |
           cd client
-          pnpm install
+          pnpm install --no-frozen-lockfile
+
       - name: Lint client
         run: |
           cd client
