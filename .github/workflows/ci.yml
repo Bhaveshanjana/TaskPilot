@@ -1,0 +1,44 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with: 
+                node-version: 18
+
+            - name: Install pnpm
+              run: npm install -g pnpm
+
+            - name: Install dependencies (Client)
+
+              run: |
+                cd client
+                npm install
+            - name: Lint client
+            
+              run: |
+                cd client
+                pnpm run lint
+
+            - name: Build client
+              run: |
+                cd client
+                pnpm run build
+
+            - name: Install dependencies (Backend)
+              run: |
+                cd server
+                pnpm install
