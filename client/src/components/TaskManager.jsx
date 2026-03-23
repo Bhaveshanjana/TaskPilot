@@ -3,17 +3,18 @@ import axios from "axios";
 import DarkMode from "../components/theme/DarkMode";
 import TaskForm from "./TaskForm";
 import ProjectList from "./ProjectList";
-import { Plus } from "lucide-react";
+import { LogOut, Plus } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useOrganization } from "../context/OrganizationContext";
 import NotificationBell from "./NotificationBell";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function TaskManager() {
   const [projects, setProjects] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -88,7 +89,7 @@ export default function TaskManager() {
         };
         console.log("duedate", dataToSend);
 
-          await axios.post(
+        await axios.post(
           `${import.meta.env.VITE_BASE_URL}/projects/createproject`,
           dataToSend,
           {
@@ -159,9 +160,7 @@ export default function TaskManager() {
 
   const handleLogOut = async () => {
     try {
-        await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/users/logout`,
-      );
+      await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`);
       localStorage.removeItem("token");
       navigate("/login");
     } catch (error) {
@@ -178,60 +177,118 @@ export default function TaskManager() {
             </h1>
           </div>
           <div className="relative">
-            <NotificationBell />
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-md cursor-pointer"
-            >
-              <span className="text-sm text-gray-800 dark:text-white">
-                Menu
-              </span>
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Notificationbell */}
+              <NotificationBell />
 
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-gray-800 shadow-lg rounded-md border dark:border-gray-700 z-50">
-                {/* Dark Mode */}
-                <div className="p-3 border-b dark:border-gray-700">
-                  <DarkMode />
+              {/* Menu icons */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center justify-center w-8 h-8 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-all duration-300 cursor-pointer"
+              >
+                <div className="relative w-6 h-6">
+                  {/* Top Line */}
+                  <motion.span
+                    className="absolute left-1 top-1 w-4 h-0.5 bg-black dark:bg-gray-300"
+                    animate={{
+                      rotate: isOpen ? 45 : 0,
+                      y: isOpen ? 8 : 0,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+
+                  {/* Middle Line */}
+                  <motion.span
+                    className="absolute left-1 top-3 w-4 h-0.5 bg-black dark:bg-gray-300"
+                    animate={{
+                      opacity: isOpen ? 0 : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                  />
+
+                  {/* Bottom Line */}
+                  <motion.span
+                    className="absolute left-1 top-5 w-4 h-0.5 bg-black dark:bg-gray-300"
+                    animate={{
+                      rotate: isOpen ? -45 : 0,
+                      y: isOpen ? -8 : 0,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </div>
+              </button>
+            </div>
 
-                {/* Organization List */}
-                <div className="p-3 border-b dark:border-gray-700">
-                  <p className="text-xs text-gray-500 mb-2">Organizations</p>
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 mt-4 w-64 bg-white dark:bg-gray-800 shadow-xl rounded-xl border dark:border-gray-700 z-50 overflow-hidden"
+                >
+                  {/* Dark Mode */}
+                  <div className="px-4 py-3 border-b dark:border-gray-700">
+                    <DarkMode />
+                  </div>
 
-                  {loading ? (
-                    <p className="text-sm text-gray-400">Loading...</p>
-                  ) : (
-                    organizations.map((org) => (
-                      <button
-                        key={org._id}
-                        onClick={() => {
-                          setCurrentOrganization(org);
-                          setIsDropdownOpen(false);
-                        }}
-                        className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-sm ${
-                          currentOrganization?._id === org._id
-                            ? "font-semibold text-blue-600"
-                            : ""
-                        }`}
-                      >
-                        {org.name}
-                      </button>
-                    ))
-                  )}
-                </div>
+                  {/* Organization List */}
+                  <div className="px-4 py-3 border-b dark:border-gray-700">
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">
+                      Organizations
+                    </p>
 
-                {/* Logout */}
-                <div className="p-3">
-                  <button
-                    onClick={handleLogOut}
-                    className="w-full text-left text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded text-sm"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            )}
+                    {loading ? (
+                      <div className="space-y-2">
+                        <div className="h-3 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                        <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        {organizations.map((org) => (
+                          <motion.button
+                            key={org._id}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                              setCurrentOrganization(org);
+                              setIsOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                              currentOrganization?._id === org._id
+                                ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium"
+                                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+                            }`}
+                          >
+                            {org.name}
+
+                            {currentOrganization?._id === org._id && (
+                              <span className="text-xs">✓</span>
+                            )}
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Logout */}
+                  <div className="px-4 py-3">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={handleLogOut}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition cursor-pointer"
+                    >
+                      <span>
+                        <LogOut className="size-4"/>
+                      </span>
+                      Logout
+                    </motion.button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </header>
