@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useOrganization } from "../context/OrganizationContext";
 import NotificationBell from "./NotificationBell";
+// eslint-disable-next-line no-unused-vars
 import { AnimatePresence, motion } from "motion/react";
 
 export default function TaskManager() {
@@ -281,7 +282,7 @@ export default function TaskManager() {
                       className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition cursor-pointer"
                     >
                       <span>
-                        <LogOut className="size-4"/>
+                        <LogOut className="size-4" />
                       </span>
                       Logout
                     </motion.button>
