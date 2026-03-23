@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
-import { useTheme } from "../context/ThemeProvider";
+import { useTheme } from "../../context/ThemeProvider";
 
 const DarkMode = () => {
   const { toggleTheme, darkMode } = useTheme();
