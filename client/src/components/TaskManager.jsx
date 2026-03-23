@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import DarkMode from "./DarkMode";
+import DarkMode from "../components/theme/DarkMode";
 import TaskForm from "./TaskForm";
 import ProjectList from "./ProjectList";
 import { Plus } from "lucide-react";
